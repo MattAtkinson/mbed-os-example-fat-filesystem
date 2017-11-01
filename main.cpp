@@ -3,8 +3,10 @@
 #include "HeapBlockDevice.h"
 #include <stdio.h>
 #include <errno.h>
+#include "SPIFBlockDevice.h"
 
-HeapBlockDevice bd(128 * 512, 512);
+SPIFBlockDevice flash(D11, D12, D13, D10);
+
 FATFileSystem fs("fs");
 
 void return_error(int ret_val){
@@ -25,11 +27,11 @@ int main() {
   int error = 0;
   printf("Welcome to the filesystem example.\r\n"
          "Formatting a FAT, RAM-backed filesystem. ");
-  error = FATFileSystem::format(&bd);
+  error = FATFileSystem::format(&flash);
   return_error(error);
 
   printf("Mounting the filesystem on \"/fs\". ");
-  error = fs.mount(&bd);
+  error = fs.mount(&flash);
   return_error(error);
 
   printf("Opening a new file, numbers.txt.");
